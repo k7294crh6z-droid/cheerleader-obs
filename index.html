@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPBL 女神全明星應援系統 V6.0</title>
+    <style>
+        :root { --active-color: #004a91; } /* 預設富邦藍 */
+        body { font-family: 'PingFang TC', system-ui, sans-serif; background: #f4f7f6; margin: 0; padding-bottom: 60px; }
+        
+        /* 隊伍導航 */
+        .team-nav { display: flex; background: #000; padding: 12px; gap: 8px; overflow-x: auto; position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .nav-btn { flex: 0 0 auto; padding: 10px 18px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
+        .btn-fubon { background: #004a91; }
+        .btn-dragons { background: #e60012; }
+        .btn-brothers { background: #ffcc00; color: #000; }
+        .btn-unigirls { background: #ff8000; }
+        .btn-monkeys { background: #800000; }
+        .btn-hawks { background: #005d31; }
+
+        .hero-banner { background: var(--active-color); color: white; padding: 45px 20px; text-align: center; transition: 0.6s ease; }
+        .hero-banner h1 { margin: 0; font-size: 2.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+        .container { max-width: 1100px; margin: -25px auto 0; padding: 0 15px; }
+        .main-card { background: white; border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+        /* 女孩選擇 */
+        .girl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; margin: 25px 0; }
+        .girl-item { background: #fff; border: 2px solid #f0f0f0; padding: 15px; border-radius: 18px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .girl-item:hover { transform: translateY(-5px); border-color: var(--active-color); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        /* 班表結果 */
+        .result-panel { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
+        .schedule-list { max-width: 600px; margin: auto; }
+        .day-row { display: flex; justify-content: space-between; padding: 16px; background: #fafafa; border-radius: 12px; margin-bottom: 8px; border-left: 8px solid var(--active-color); }
+        .date-str { font-size: 1.1em; font-weight: 900; color: #333; }
+        .venue-tag { background: #333; color: white; padding: 4px 12px; border-radius: 10px; font-size: 0.85em; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="team-nav">
+    <button class="nav-btn btn-fubon" onclick="changeTeam('Fubon')">富邦悍將</button>
+    <button class="nav-btn btn-dragons" onclick="changeTeam('Dragons')">味全龍</button>
+    <button class="nav-btn btn-brothers" onclick="changeTeam('Brothers')">中信兄弟</button>
+    <button class="nav-btn btn-unigirls" onclick="changeTeam('UniGirls')">統一獅</button>
+    <button class="nav-btn btn-monkeys" onclick="changeTeam('Rakuten')">樂天桃猿</button>
+    <button class="nav-btn btn-hawks" onclick="changeTeam('Hawks')">台鋼雄鷹</button>
+</div>
+
+<div class="hero-banner" id="banner">
+    <h1 id="team-name">Fubon Angels 班表中心</h1>
+    <p>資產 1.5 億大老闆專用追星系統</p>
+</div>
+
+<div class="container">
+    <div class="main-card">
+        <h3 style="color:#666;">🙋 選擇你想觀測的女神：</h3>
+        <div class="girl-grid" id="girl-list"></div>
+        
+        <div class="result-panel" id="result-panel">
+            <h2 id="girl-title" style="text-align:center; color: var(--active-color);"></h2>
+            <div class="schedule-list" id="schedule-data"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const database = {
+        "Fubon": {
+            "title": "Fubon Angels 富邦悍將", "color": "#004a91",
+            "girls": {
+                "李珠珢": ["4.03 新莊", "4.04 新莊", "4.05 新莊", "4.18 新莊", "4.19 新莊"],
+                "慈妹": ["4.03 新莊", "4.04 新莊", "4.05 新莊", "4.06 新莊", "4.07 新莊"],
+                "沁沁": ["4.03 新莊", "4.04 新莊", "4.06 新莊", "4.18 新莊", "4.19 新莊"],
+                "丹丹": ["4.07 新莊", "4.14 新莊", "4.15 新莊", "4.17 新莊", "4.18 新莊", "4.28 新莊", "4.29 新莊"],
+                "李雅英": ["4.03 新莊", "4.04 新莊", "4.05 新莊", "4.06 新莊", "4.07 新莊"],
+                "Jessy": ["4.03 新莊", "4.04 新莊", "4.05 新莊", "4.06 新莊", "4.14 新莊", "4.17 新莊", "4.18 新莊", "4.19 新莊", "4.28 新莊"]
+            }
+        },
+        "Dragons": {
+            "title": "Dragon Beauties 味全龍", "color": "#e60012",
+            "girls": {
+                "李多慧": ["4.03 天母", "4.04 天母", "4.05 天母", "4.17 天母", "4.19 天母"],
+                "林襄": ["4.03 天母", "4.04 天母", "4.05 天母", "4.06 天母", "4.18 天母"]
+            }
+        },
+        "Brothers": {
+            "title": "Passion Sisters 中信兄弟", "color": "#ffcc00",
+            "girls": {
+                "峮峮": ["4.03 臺巨", "4.04 臺巨", "4.05 臺巨", "4.24 洲際", "4.26 洲際"]
+            }
+        },
+        "UniGirls": {
+            "title": "Uni-Girls 統一獅", "color": "#ff8000",
+            "girls": {
+                "瑟七": ["4.10 臺南", "4.11 臺南", "4.12 臺南", "4.24 臺南", "4.26 臺南"]
+            }
+        },
+        "Rakuten": {
+            "title": "Rakuten Girls 樂天桃猿", "color": "#800000",
+            "girls": {
+                "孟潔": ["3.28 臺巨", "3.31 桃園", "4.10 桃園", "4.21 桃園", "4.26 桃園"]
+            }
+        },
+        "Hawks": {
+            "title": "Wing Stars 台鋼雄鷹", "color": "#005d31",
+            "girls": {
+                "一粒": ["4.06 澄清湖", "4.07 澄清湖", "4.11 澄清湖", "4.17 澄清湖", "4.23 澄清湖"]
+            }
+        }
+    };
+
+    function changeTeam(key) {
+        const team = database[key];
+        document.documentElement.style.setProperty('--active-color', team.color);
+        document.getElementById('banner').style.backgroundColor = team.color;
+        document.getElementById('team-name').innerText = team.title;
+        
+        const list = document.getElementById('girl-list');
+        list.innerHTML = "";
+        Object.keys(team.girls).forEach(name => {
+            const div = document.createElement('div');
+            div.className = 'girl-item';
+            div.innerText = name;
+            div.onclick = () => showSchedule(key, name);
+            list.appendChild(div);
+        });
+        document.getElementById('result-panel').style.display = 'none';
+    }
+
+    function showSchedule(teamKey, name) {
+        const schedule = database[teamKey].girls[name];
+        document.getElementById('girl-title').innerText = "🌟 " + name + " 🌟";
+        document.getElementById('schedule-data').innerHTML = schedule.map(s => `
+            <div class="day-row">
+                <span class="date-str">📅 ${s.split(' ')[0]}</span>
+                <span class="venue-tag">${s.split(' ')[1]}</span>
+            </div>
+        `).join('');
+        document.getElementById('result-panel').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // 初始化加載富邦
+    changeTeam('Fubon');
+</script>
+
+</body>
+</html>
