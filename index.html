@@ -3,80 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1.5億大老闆-女神觀測系統旗艦版</title>
+    <title>CPBL 啦啦隊全明星觀測站</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --rakuten: #8b0029; }
-        body { background-color: #020617; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
-        
-        /* 女神卡片樣式：白底、懸浮感、專業佈局 */
-        .goddess-card { 
-            background: white; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
-        }
-        .goddess-card:hover { transform: translateY(-10px); box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3); }
-        .goddess-img { width: 100%; height: 320px; object-fit: cover; object-position: center 20%; border-bottom: 1px solid #eee; }
-        
-        /* 韓籍女神標籤 */
-        .kr-label {
-            position: absolute; top: 12px; right: 12px;
-            background: linear-gradient(to right, #fbbf24, #f59e0b); color: black;
-            padding: 4px 12px; border-radius: 999px; font-weight: 900; font-size: 11px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
+        .team-btn { transition: all 0.3s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+        .team-btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        body { background-color: #0f172a; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        .name-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); transition: all 0.2s; }
+        .name-card:hover { transform: scale(1.05); z-index: 10; border-color: #3b82f6; }
+        .korean-tag { border: 2px solid #eab308 !important; color: #fde047; }
     </style>
 </head>
 <body class="text-white p-4 pb-20">
-    <div class="max-w-7xl mx-auto">
-        <header class="text-center py-10 mb-8 border-b border-slate-800 sticky top-0 bg-slate-950/90 backdrop-blur-sm z-50">
-            <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-yellow-300 via-orange-400 to-yellow-600 mb-2">資產 1.5 億大老闆專屬</h1>
-            <p class="text-blue-300 text-sm mt-1">CPBL GODDESS MONITORING SYSTEM</p>
-            
-            <div class="flex flex-wrap justify-center gap-3 mt-8">
-                <button onclick="showTeam('monkeys')" class="bg-[#8b0029] hover:bg-[#a00030] text-white px-8 py-3 rounded-full font-black shadow-lg">RAKUTEN Girls</button>
-                <button onclick="showTeam('fubon')" class="bg-[#004a95] hover:bg-[#005bb5] text-white px-8 py-3 rounded-full font-black shadow-lg">FUBON Angels</button>
-                <button onclick="showTeam('brothers')" class="bg-[#ffcc00] hover:bg-[#ffdd33] text-black px-8 py-3 rounded-full font-black shadow-lg">Passion Sisters</button>
-            </div>
+    <div class="max-w-2xl mx-auto">
+        <header class="text-center py-10">
+            <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight">啦啦隊員觀測系統</h1>
+            <p class="text-slate-400 tracking-widest font-medium uppercase text-sm">2026 CPBL All-Star Cheerleaders</p>
         </header>
 
-        <div id="displayArea" class="bg-slate-900/80 rounded-[2rem] p-8 min-h-[700px]">
-            <div id="welcomeMsg" class="text-center py-48 text-slate-600 font-bold italic text-3xl">Waiting for Boss's Order...</div>
-            <div id="nameList" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden"></div>
+        <div class="grid grid-cols-3 gap-2 mb-8">
+            <button onclick="showTeam('fubon')" class="team-btn bg-blue-700 p-3 rounded-lg font-bold text-sm">Fubon Angels</button>
+            <button onclick="showTeam('weweison')" class="team-btn bg-red-700 p-3 rounded-lg font-bold text-sm">小龍女</button>
+            <button onclick="showTeam('brothers')" class="team-btn bg-yellow-500 p-3 rounded-lg font-bold text-sm text-black">Passion Sisters</button>
+            <button onclick="showTeam('unilions')" class="team-btn bg-orange-600 p-3 rounded-lg font-bold text-sm">Uni-Girls</button>
+            <button onclick="showTeam('monkeys')" class="team-btn bg-pink-700 p-3 rounded-lg font-bold text-sm">樂天女孩</button>
+            <button onclick="showTeam('wingstars')" class="team-btn bg-teal-500 p-3 rounded-lg font-bold text-sm">Wing Stars</button>
+        </div>
+
+        <div id="displayArea" class="bg-slate-900/50 rounded-3xl p-6 border border-slate-800 shadow-2xl min-h-[550px] backdrop-blur-sm">
+            <div id="welcomeMsg" class="text-center py-40 text-slate-500">
+                <p class="text-xl">請選擇隊伍，載入名單資料...</p>
+            </div>
+            <div id="nameList" class="grid grid-cols-2 md:grid-cols-3 gap-3 hidden"></div>
         </div>
     </div>
 
     <script>
-        const girls = {
-            'monkeys': [
-                {n:'李晧禎', kr:true, img:'https://cdn-origin.cool-style.com.tw/cool/2023/11/S__63258674.jpg'},
-                {n:'李多慧', kr:true, img:'https://img.ltn.com.tw/Upload/ent/page/800/2023/04/14/phpVdE7uM.jpg'},
-                {n:'籃籃', kr:false, img:'https://img.ltn.com.tw/Upload/ent/page/800/2023/04/28/phptMv0T7.jpg'},
-                {n:'若潼', kr:false, img:'https://cdn-origin.cool-style.com.tw/cool/2023/04/340323315_6164214233635749_7880998319692348574_n.jpg'},
-                {n:'孟潔', kr:false, img:'https://img.ltn.com.tw/Upload/ent/page/800/2023/05/01/php1vO9N2.jpg'}
-            ],
-            'fubon': [
-                {n:'李珠珢', kr:true, img:'https://img.ltn.com.tw/Upload/ent/page/800/2024/07/22/phpm67QWJ.jpg'},
-                {n:'李雅英', kr:true, img:'https://cdn-origin.cool-style.com.tw/cool/2024/03/343204.jpg'},
-                {n:'南珉貞', kr:true, img:'https://cdn-origin.cool-style.com.tw/cool/2024/03/S__38871004.jpg'},
-                {n:'慈妹', kr:false, img:'https://img.ltn.com.tw/Upload/ent/page/800/2023/04/10/phpXh77a4.jpg'}
-            ]
+        const cheerleaderData = {
+            'fubon': ['李珠珢(韓)', '李雅英(韓)', '南珉貞(韓)', '慈妹', '沁沁', '丹丹', 'Jessy', '秀秀子', '檸檬', '奶昔', '卡卡', '東東', '潔米', '安娜', '栗子', '大頭', '蓁蓁', '維心'],
+            'weweison': ['李多慧(韓)', '林襄', '小映', '口水', '賴可', '馬妹', '張晴', '琪琪', '心璇', '芷霖', '小蛙', '小螞蟻', '璦亞', '詩雅', '沛沛', '曉帆'],
+            'brothers': ['邊荷律(韓)', '李丹妃(韓)', '峮峮', '短今', '希希', '畇畇', '洗迪琦', '妮可', '曼容', '君白', '凱蒂', '波波', '小安', '晴兒', '貴貴', '夏蕾', '怡琪', 'Wendy'],
+            'unilions': ['趙娟週(韓)', '瑟七', '斐棋', '艾璐', 'Ｍina', '賴賴', '曼萍', '詩雅', '芮絲', '由進', '妮妮', 'Yuki', '咪雅', '少少', 'JOY', '侯芳'],
+            'monkeys': ['李多慧(韓)', '李晧禎(韓)', '籃籃', '筠熹', '琳妲', '十元', '若潼', '嘎琳', '菲菲', '卉妮', '穎樂', '苡萱', '曲曲', '心韻', '宋宋', '熊霓', '禹菡', '儷軒', '凱伊'],
+            'wingstars': ['安芝儇(韓)', 'Ｍingo(韓)', '一粒', '妡玖', '螢螢', '圈圈', '艾琳', '曉彤', '林浠', '瑈瑈', '昆昆', '恬魚', '黃澄澄', '羽飛']
         };
 
         function showTeam(team) {
             document.getElementById('welcomeMsg').classList.add('hidden');
-            const list = document.getElementById('nameList');
-            list.classList.remove('hidden');
-            list.innerHTML = girls[team].map(g => `
-                <div class="goddess-card relative cursor-pointer" onclick="alert('大老闆選中了：${g.n}')">
-                    ${g.kr ? '<div class="kr-label">KOREA</div>' : ''}
-                    <img src="${g.img}" class="goddess-img" loading="lazy" onerror="this.src='https://via.placeholder.com/400x600?text=Wait+for+Boss'">
-                    <div class="p-5 text-center bg-white">
-                        <h3 class="text-xl font-bold text-slate-800 mb-1">${g.n}</h3>
-                        <p class="text-xs text-slate-400 font-bold tracking-widest uppercase">IDOL SYSTEM</p>
-                    </div>
-                </div>
-            `).join('');
+            const nameList = document.getElementById('nameList');
+            nameList.classList.remove('hidden');
+            nameList.innerHTML = '';
+
+            cheerleaderData[team].forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'name-card p-4 rounded-xl border border-slate-700 text-center text-lg font-bold hover:border-blue-500 transition-all cursor-pointer shadow-md';
+                div.innerText = name;
+                
+                if(name.includes('(韓)')) {
+                    div.classList.add('korean-tag');
+                }
+                
+                div.onclick = () => console.log(`正在觀測: ${name}`);
+                nameList.appendChild(div);
+            });
         }
     </script>
 </body>
